@@ -1,4 +1,5 @@
 """Бизнес логика сервиса Product"""
+
 from product.product_service.exeptions import ProductNotFoundError
 
 
