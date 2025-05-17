@@ -6,6 +6,7 @@ from product.product_service.product_service import ProductService
 from product.web.main import app
 from product.web.api.schemas import CreateProductSchema, GetProductSchema
 
+
 @app.post(
     "/products",
     status_code=status.HTTP_201_CREATED,
