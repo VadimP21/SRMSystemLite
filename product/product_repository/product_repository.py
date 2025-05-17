@@ -40,11 +40,11 @@ class ProductRepository:
             print(f"Error getting product: {e}")
             return None
 
-    def add(self, **product: Dict[str, Any]) -> Product | None:
+    def add(self, product: Dict[str, Any]) -> Product | None:
         try:
             record = ProductModel(**product)
             self.session.add(record)
-            return Product(**record.dict())
+            return Product(**record.dict(), product_=record)
         except SQLAlchemyError as e:
             print(f"Error adding product: {e}")
             return None
