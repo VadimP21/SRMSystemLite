@@ -20,6 +20,14 @@ class ProductModel(Base):
     def __repr__(self) -> str:
         return f"Product(id={self.id!r}, name={self.name!r}, price={self.price!r})"
 
+    def dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": str(self.price),
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
     def formatted_price(self) -> str:
         """Возвращает цену в виде строки с валютой."""
         return f"${self.price:,.2f}"
