@@ -7,8 +7,8 @@ class ProductService:
     def __init__(self, product_repository):
         self.product_repository = product_repository
 
-    def place_product(self, items):
-        self.product_repository.add(items)
+    def place_product(self, item):
+        return self.product_repository.add(item)
 
     def get_product(self, product_name):
         product = self.product_repository.get(product_name)
