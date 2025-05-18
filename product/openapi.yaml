@@ -22,11 +22,22 @@ paths:
           required: false
           schema:
             type: integer
-        - name: sort
+        - name: offset
           in: query
           required: false
           schema:
             type: integer
+        - name: sort_field
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortField'
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+
       summary: Returns a list of products
       operationId: getOrders
       returns:
@@ -90,7 +101,19 @@ components:
           oneOf:
             - type: string
             - type: array
-
+    SortField:
+      additionalProperties: false
+      type: string
+      enum:
+        - name
+        - price
+        - created_at
+    SortOrder:
+          additionalProperties: false
+          type: string
+          enum:
+            - asc
+            - desc
     GetProductSchema:
       additionalProperties: false
       type: object
