@@ -30,4 +30,14 @@ class ProductService:
 
     def list_products(self, **filters):
         limit = filters.pop("limit", None)
-        return self.product_repository.get_list(limit, **filters)
+        offset = filters.pop("offset", None)
+        sort_field = filters.pop("sort_field", None)
+        sort_order = filters.pop("sort_order", None)
+
+        return self.product_repository.get_list(
+            limit=limit,
+            offset=offset,
+            sort_field=sort_field,
+            sort_order=sort_order,
+            **filters,
+        )
