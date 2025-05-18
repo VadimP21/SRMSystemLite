@@ -1,0 +1,125 @@
+openapi: 3.1.0
+
+info:
+  title: Product API
+  summary: API that allows you to manage products for SRM
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: local development server
+  - url: https://crm.worksystem.com
+    description: main production server
+  - url: https://crm.worksystem-staging.com
+    description: staging server for testing purposes only
+
+paths:
+  /products:
+    get:
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: integer
+      summary: Returns a list of products
+      operationId: getOrders
+      returns:
+        '200':
+          description: A JSON array of products
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GetProductSchema'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+
+    post:
+      summary: Create a product_exampl
+      operationId: CreateProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: '#/components/schemas/CreateProductSchema'
+      responses:
+        '201':
+          description: A JSON representation of the created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductSchema'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: The payload contains invalid values.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required:
+        - detail
+      properties:
+        detail:
+          oneOf:
+            - type: string
+            - type: array
+
+    GetProductSchema:
+      additionalProperties: false
+      type: object
+      required:
+        - id
+        - name
+        - price
+        - created_at
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: float
+        created:
+          type: string
+          format:
+            date-time
+
+    CreateProductSchema:
+      additionalProperties: false
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: decimal
