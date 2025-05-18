@@ -59,10 +59,27 @@ class ProductRepository:
             print(f"Error getting product: {e}")
             return None
 
-    def get_list(self, limit, **filters) -> List[Product] | None:
+    def get_list(
+        self,
+        limit: int | None,
+        offset: int | None,
+        sort_field: str | None,
+        sort_order: str = "asc",
+        **filters,
+    ) -> List[Product] | None:
         try:
-            query = self.session.query(ProductModel)
-            products = query.filter_by(**filters).limit(limit).all()
+            query = self.session.query(ProductModel).filter_by(**filters)
+            if sort_field is not None:
+                if sort_order == "desc":
+                    query = query.order_by(getattr(ProductModel, sort_field).desc())
+                else:
+                    query = query.order_by(getattr(ProductModel, sort_field))
+            if limit is not None:
+                query = query.limit(limit)
+            if offset > 0:
+                query = query.offset(offset)
+            products = query.all()
+
             return [Product(**product.dict()) for product in products]
         except SQLAlchemyError as e:
             print(f"Error getting products: {e}")
