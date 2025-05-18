@@ -59,10 +59,9 @@ class ProductRepository:
             print(f"Error getting product: {e}")
             return None
 
-    def list(self, limit, **filters) -> List[Product] | None:
+    def get_list(self, limit, **filters) -> List[Product] | None:
         try:
             query = self.session.query(ProductModel)
-
             products = query.filter_by(**filters).limit(limit).all()
             return [Product(**product.dict()) for product in products]
         except SQLAlchemyError as e:
