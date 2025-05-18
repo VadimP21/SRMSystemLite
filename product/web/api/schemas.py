@@ -1,7 +1,8 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class CreateProductSchema(BaseModel):
@@ -12,3 +13,6 @@ class CreateProductSchema(BaseModel):
 class GetProductSchema(CreateProductSchema):
     id: int
     created_at: datetime
+
+class ProductResponse(BaseModel):
+    products: List[GetProductSchema]
