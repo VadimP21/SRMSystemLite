@@ -1,10 +1,17 @@
+from fastapi import Query
 from starlette import status
 
 from product.product_repository.product_repository import ProductRepository
 from product.product_repository.unit_fo_work import UnitOfWork
 from product.product_service.product_service import ProductService
 from product.web.main import app
-from product.web.api.schemas import CreateProductSchema, GetProductSchema, ProductResponse
+from product.web.api.schemas import (
+    CreateProductSchema,
+    GetProductSchema,
+    ProductResponse,
+    SortOrder,
+    SortField,
+)
 
 
 @app.post(
@@ -20,7 +27,6 @@ def create_product(payload: CreateProductSchema):
         product = product_service.place_product(product)
         unit_of_work.commit()
         return_payload = product.dict()
-
     return return_payload
 
 
@@ -29,9 +35,17 @@ def create_product(payload: CreateProductSchema):
     status_code=status.HTTP_200_OK,
     response_model=ProductResponse,
 )
-def get_products_list(limit: int = None):
+def get_products_list(
+    limit: int | None = Query(10, ge=1),
+    offset: int | None = Query(0, ge=0),
+    sort_field: SortField | None = Query(None),
+    sort_order: SortOrder | None = Query("asc", regex="^(asc|desc)$"),
+):
     with UnitOfWork() as unit_of_work:
         repo = ProductRepository(unit_of_work.session)
         product_service = ProductService(repo)
-        all_products = product_service.list_products(limit=limit)
+
+        all_products = product_service.list_products(
+            limit=limit, offset=offset, sort_field=sort_field, sort_order=sort_order
+        )
         return {"products": [product.dict() for product in all_products]}
