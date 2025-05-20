@@ -71,8 +71,64 @@ paths:
                 $ref: '#/components/schemas/Error'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
-
-
+  /products/{product_name}:
+    parameters:
+      - in: path
+        name: product_name
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Returns the details of a specific product
+      operationId: getProduct
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    put:
+      summary: Replaces an existing product
+      operationId: putProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /products/{product_id}:
+    parameters:
+      - in: path
+        name: product_id
+        required: true
+        schema:
+          type: integer
+    delete:
+      summary: Deletes an existing product
+      operationId: deleteProduct
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
 components:
   responses:
     NotFound:
