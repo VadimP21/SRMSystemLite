@@ -52,7 +52,7 @@ def get_products_list(
 
 
 @app.get(
-    "/product/{product_name}",
+    "/products/{product_name}",
     response_model=GetProductSchema,
 )
 def get_product(product_name: str):
@@ -71,7 +71,7 @@ def get_product(product_name: str):
 
 
 @app.put(
-    "/product/{product_name}",
+    "/products/{product_name}",
     response_model=GetProductSchema,
 )
 def update_product(product_name: str, product_details: CreateProductSchema):
@@ -93,7 +93,7 @@ def update_product(product_name: str, product_details: CreateProductSchema):
 
 
 @app.delete(
-    "/product/{product_id}",
+    "/products/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def delete_product(product_id: int):
