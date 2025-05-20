@@ -40,25 +40,6 @@ class ProductRepository:
             print(f"Error getting product: {e}")
             return None
 
-    def add(self, product: Dict[str, Any]) -> Product | None:
-        try:
-            record = ProductModel(**product)
-            self.session.add(record)
-            return Product(**record.dict(), product_=record)
-        except SQLAlchemyError as e:
-            print(f"Error adding product: {e}")
-            return None
-
-    def get_one_by_name(self, name_: str) -> Product | None:
-        try:
-            product = self._get_by_name(name_)
-            if product:
-                return Product(**product.dict())
-            return None
-        except SQLAlchemyError as e:
-            print(f"Error getting product: {e}")
-            return None
-
     def get_list(
         self,
         limit: int | None,
@@ -84,3 +65,53 @@ class ProductRepository:
         except SQLAlchemyError as e:
             print(f"Error getting products: {e}")
             return None
+
+    def add(self, product: Dict[str, Any]) -> Product | None:
+        try:
+            record = ProductModel(**product)
+            self.session.add(record)
+            return Product(**record.dict(), product_=record)
+        except SQLAlchemyError as e:
+            print(f"Error adding product: {e}")
+            return None
+
+    def get_by_id(self, id_: int) -> Product | None:
+        try:
+            product = self._get_by_id(id_)
+            if product:
+                return Product(**product.dict())
+            return None
+        except SQLAlchemyError as e:
+            print(f"Error getting product: {e}")
+            return None
+
+    def get_by_name(self, name_: str) -> Product | None:
+        try:
+            product = self._get_by_name(name_)
+            if product:
+                return Product(**product.dict())
+            return None
+        except SQLAlchemyError as e:
+            print(f"Error getting product: {e}")
+            return None
+
+    def update(self, name_: str, new_product: Dict[str, Any]) -> Product | None:
+        try:
+            record = self._get_by_name(name_)
+            if record is None:
+                return None
+            for key, val in new_product.items():
+                setattr(record, key, val)
+            return Product(**record.dict())
+
+        except SQLAlchemyError as e:
+            print(f"Error getting product: {e}")
+            return None
+
+    def delete(self, id_: int):
+        try:
+            record = self._get_by_id(id_)
+            if record:
+                self.session.delete(record)
+        except SQLAlchemyError as e:
+            print(f"Error deleting product: {e}")
