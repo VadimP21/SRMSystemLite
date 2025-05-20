@@ -11,22 +11,23 @@ class ProductService:
         return self.product_repository.add(item)
 
     def get_product(self, product_name):
-        product = self.product_repository.get(product_name)
+        product = self.product_repository.get_by_name(product_name)
         if product is not None:
             return product
-        raise ProductNotFoundError(f"Product with id {product_name} is not found")
+        raise ProductNotFoundError(f"Product '{product_name}' is not found")
 
     def update_product(self, product_name, new_product):
-        product = self.product_repository.get(product_name)
+        product = self.product_repository.get_by_name(product_name)
         if product is None:
             raise ProductNotFoundError(f"Product with id {product_name} is not found")
+        print(product_name, new_product)
         return self.product_repository.update(product_name, new_product)
 
-    def delete_product(self, product_name):
-        product = self.product_repository.get(product_name)
+    def delete_product(self, product_id):
+        product = self.product_repository.get_by_id(product_id)
         if product is None:
-            raise ProductNotFoundError(f"Product with id {product_name} is not found")
-        self.product_repository.delete(product_name)
+            raise ProductNotFoundError(f"Product with id {product_id} is not found")
+        self.product_repository.delete(product_id)
 
     def list_products(self, **filters):
         limit = filters.pop("limit", None)
