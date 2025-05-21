@@ -39,7 +39,7 @@ def get_products_list(
     limit: int | None = Query(10, ge=1),
     offset: int | None = Query(0, ge=0),
     sort_field: SortField | None = Query(None),
-    sort_order: SortOrder | None = Query("asc", regex="^(asc|desc)$"),
+    sort_order: SortOrder | None = Query("asc", pattern="^(asc|desc)$"),
 ):
     with UnitOfWork() as unit_of_work:
         repo = ProductRepository(unit_of_work.session)
