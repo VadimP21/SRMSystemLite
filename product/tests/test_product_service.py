@@ -42,7 +42,9 @@ class TestProductService(unittest.TestCase):
         product_name = "Nonexistent Product"
         self.mock_repository.get_by_name.return_value = None
 
-        with self.assertRaisesRegex(ProductNotFoundError, f"Product '{product_name}' is not found"):
+        with self.assertRaisesRegex(
+            ProductNotFoundError, f"Product '{product_name}' is not found"
+        ):
             self.product_service.get_product(product_name)
 
         self.mock_repository.get_by_name.assert_called_once_with(product_name)
@@ -60,7 +62,9 @@ class TestProductService(unittest.TestCase):
         result = self.product_service.update_product(product_name, new_product_data)
 
         self.mock_repository.get_by_name.assert_called_once_with(product_name)
-        self.mock_repository.update.assert_called_once_with(product_name, new_product_data)
+        self.mock_repository.update.assert_called_once_with(
+            product_name, new_product_data
+        )
         self.assertEqual(result, mock_updated_product)
 
     def test_update_product_not_found(self):
@@ -70,7 +74,9 @@ class TestProductService(unittest.TestCase):
 
         self.mock_repository.get_by_name.return_value = None
 
-        with self.assertRaisesRegex(ProductNotFoundError, f"Product with name {product_name} is not found"):
+        with self.assertRaisesRegex(
+            ProductNotFoundError, f"Product with name {product_name} is not found"
+        ):
             self.product_service.update_product(product_name, new_product_data)
 
         self.mock_repository.get_by_name.assert_called_once_with(product_name)
@@ -95,7 +101,9 @@ class TestProductService(unittest.TestCase):
 
         self.mock_repository.get_by_id.return_value = None
 
-        with self.assertRaisesRegex(ProductNotFoundError, f"Product with id {product_id} is not found"):
+        with self.assertRaisesRegex(
+            ProductNotFoundError, f"Product with id {product_id} is not found"
+        ):
             self.product_service.delete_product(product_id)
 
         self.mock_repository.get_by_id.assert_called_once_with(product_id)
@@ -104,7 +112,11 @@ class TestProductService(unittest.TestCase):
     def test_delete_product_hard_found(self):
         """Тест delete_product_hard удаляет продукт (жестко), если найден."""
         product_id = 5
-        mock_product = {"id": product_id, "name": "Product to Delete Hard", "price": 300}
+        mock_product = {
+            "id": product_id,
+            "name": "Product to Delete Hard",
+            "price": 300,
+        }
 
         self.mock_repository.get_by_id.return_value = mock_product
 
@@ -114,19 +126,19 @@ class TestProductService(unittest.TestCase):
         self.mock_repository.delete_hard.assert_called_once_with(product_id)
         self.assertIsNone(result)
 
-
     def test_delete_product_hard_not_found(self):
         """Тест delete_product_hard выбрасывает ProductNotFoundError, если продукт не найден."""
         product_id = 6
 
         self.mock_repository.get_by_id.return_value = None
 
-        with self.assertRaisesRegex(ProductNotFoundError, f"Product with id {product_id} is not found"):
+        with self.assertRaisesRegex(
+            ProductNotFoundError, f"Product with id {product_id} is not found"
+        ):
             self.product_service.delete_product_hard(product_id)
 
         self.mock_repository.get_by_id.assert_called_once_with(product_id)
         self.mock_repository.delete_hard.assert_not_called()
-
 
     def test_list_products_without_filters(self):
         """Тест list_products без фильтров вызывает get_list репозитория без аргументов."""
@@ -162,7 +174,12 @@ class TestProductService(unittest.TestCase):
         result = self.product_service.list_products(**filters)
 
         self.mock_repository.get_list.assert_called_once_with(
-            limit=None, offset=None, sort_field=None, sort_order=None, category="Electronics", is_active=True
+            limit=None,
+            offset=None,
+            sort_field=None,
+            sort_order=None,
+            category="Electronics",
+            is_active=True,
         )
         self.assertEqual(result, mock_product_list)
 
@@ -175,7 +192,7 @@ class TestProductService(unittest.TestCase):
             "sort_field": "price",
             "sort_order": "desc",
             "price_gt": 100,
-            "in_stock": True
+            "in_stock": True,
         }
         self.mock_repository.get_list.return_value = mock_product_list
 
@@ -187,10 +204,10 @@ class TestProductService(unittest.TestCase):
             sort_field="price",
             sort_order="desc",
             price_gt=100,
-            in_stock=True
+            in_stock=True,
         )
         self.assertEqual(result, mock_product_list)
 
 
-if __name__ == '__main__':
-    unittest.main(argv=['first-arg-is-ignored'], exit=False)
+if __name__ == "__main__":
+    unittest.main(argv=["first-arg-is-ignored"], exit=False)
