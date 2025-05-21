@@ -21,11 +21,17 @@ paths:
           required: false
           schema:
             type: integer
+            default: 10
+            minimum: 10
+            maximum: 50
         - name: offset
           in: query
           required: false
           schema:
             type: integer
+            default: 10
+            minimum: 0
+            maximum: 50
         - name: sort_field
           in: query
           required: false
@@ -63,6 +69,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetProductSchema'
+          links:
+            GetProduct:
+              operationId: getProduct
+              parameters:
+                product_name: '$response.body#/name'
+              description: >
+                The `name` value returned in the response can be used as
+                the `product_name` parameter in `GET /product/{product_name}
+            UpdateProduct:
+              operationId: updateProduct
+              parameters:
+                product_name: '$response.body#/name'
+              description: >
+                The `name` value returned in the response can be used as
+                the `product_name` parameter in `PUT /product/{product_name}
+            DeleteProduct:
+              operationId: deleteProduct
+              parameters:
+                product_id: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `product_id` parameter in `DELETE /product/{product_id}
         '400':
           description: Bad Request - Validation Error
           content:
@@ -78,6 +106,8 @@ paths:
         required: true
         schema:
           type: string
+          format: int32
+          minLength: 1
     get:
       summary: Returns the details of a specific product
       operationId: getProduct
@@ -94,7 +124,7 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
     put:
       summary: Replaces an existing product
-      operationId: putProduct
+      operationId: updateProduct
       requestBody:
         required: true
         content:
@@ -119,6 +149,9 @@ paths:
         required: true
         schema:
           type: integer
+          format: int32
+          maximum: 1000000
+          minimum: 1
     delete:
       summary: Deletes an existing product
       operationId: deleteProduct
@@ -172,9 +205,12 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         price:
           type: number
           format: decimal
+          minimum: 1
+          maximum: 100000000
     GetProductSchema:
       allOf:
         - $ref: '#/components/schemas/CreateProductSchema'
@@ -182,7 +218,8 @@ components:
           properties:
             id:
               type: integer
-              format: int64
+              format: int32
+              maximum: 1000000
             created_at:
               type: string
               format: date-time
