@@ -36,8 +36,8 @@ def create_product(payload: CreateProductSchema):
     response_model=ProductResponse,
 )
 def get_products_list(
-    limit: int | None = Query(10, ge=1),
-    offset: int | None = Query(0, ge=0),
+    limit: int | None = Query(10, ge=10, le=50),
+    offset: int | None = Query(0, ge=0, le=50),
     sort_field: SortField | None = Query(None),
     sort_order: SortOrder | None = Query("asc", pattern="^(asc|desc)$"),
 ):
