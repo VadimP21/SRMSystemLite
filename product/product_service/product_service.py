@@ -19,7 +19,7 @@ class ProductService:
     def update_product(self, product_name, new_product):
         product = self.product_repository.get_by_name(product_name)
         if product is None:
-            raise ProductNotFoundError(f"Product with id {product_name} is not found")
+            raise ProductNotFoundError(f"Product with name {product_name} is not found")
         print(product_name, new_product)
         return self.product_repository.update(product_name, new_product)
 
