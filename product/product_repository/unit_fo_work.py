@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from product.settings.bd_settings import settings
+
 
 class UnitOfWork:
     def __init__(self):
-        self.session_maker = sessionmaker(bind=create_engine("sqlite:///orders.db"))
+        self.session_maker = sessionmaker(bind=create_engine(settings.DATABASE_URL))
 
     def __enter__(self):
         self.session = self.session_maker()
