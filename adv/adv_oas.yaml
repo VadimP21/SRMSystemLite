@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  title: Advertisement API
+  summary: API that allows you to manage advertisement for CRM
+  version: 1.0.0
+
+servers:
+  - url: https://localhost:8000
+    description: local development server
+  - url: https://crm.worksystem.com
+    description: main production server
+  - url: https://crm.worksystem-staging.com
+    description: staging server for testing purposes only
+
+paths:
+  /ads:
+    get:
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 10
+            maximum: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+            maximum: 50
+        - name: sort_field
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortField'
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      summary: Returns a list of advertisements
+      operationId: getAds
+      responses:
+        '200':
+          description: A JSON array of ads
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdsResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    post:
+      summary: Create a adv
+      operationId: CreateAdv
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdvSchema'
+      responses:
+        '201':
+          description: A JSON representation of the created advertisement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAdvSchema'
+          links:
+            GetAdv:
+              operationId: getAdv
+              parameters:
+                product_name: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `adv_id` parameter in `GET /adv/{adv_id}`
+            UpdateAdv:
+              operationId: updateAdv
+              parameters:
+                product_name: '$response.body#/id'
+              description: >
+                The `name` value returned in the response can be used as
+                the `adv_id` parameter in `PUT /adv/{adv_id}
+            DeleteAdv:
+              operationId: deleteAdv
+              parameters:
+                product_id: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `adv_id` parameter in `DELETE /adv/{adv_id}
+        '400':
+          description: Bad Request - Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /adv/{adv_id}:
+    parameters:
+      - in: path
+        name: adv_id
+        required: true
+        schema:
+          type: integer
+          format: int32
+          maximum: 1000000
+          minimum: 1
+    get:
+      summary: Returns the details of a specific advertisement
+      operationId: getAdv
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAdvSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    put:
+      summary: Replaces an existing advertisement
+      operationId: updateAdv
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAdvSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAdvSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      summary: Deletes an existing advertisement
+      operationId: deleteAdv
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: The payload contains invalid values.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          oneOf:
+            - type: string
+            - type: array
+    SortField:
+      type: string
+      enum:
+        - name
+        - price
+        - created_at
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+    CreateAdvSchema:
+      type: object
+      required:
+        - name
+        - chanel
+        - cost
+        - product_id
+      properties:
+        name:
+          type: string
+          minLength: 1
+        chanel:
+          type: string
+          minLength: 1
+        cost:
+          type: number
+          format: decimal
+          minimum: 1
+          maximum: 100000000
+        id:
+          type: integer
+          format: int32
+          maximum: 1000000
+    GetAdvSchema:
+      allOf:
+        - $ref: '#/components/schemas/CreateAdvSchema'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              maximum: 1000000
+            created_at:
+              type: string
+              format: date-time
+    AdvResponse:
+      type: object
+      description: Response containing a list of advertisements.
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAdvSchema'
