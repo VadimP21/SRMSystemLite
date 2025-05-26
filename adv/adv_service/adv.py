@@ -1,8 +1,6 @@
 class Adv:
-    def __init__(
-        self, id, name, chanel, cost, created_at, product_id, advertisement_=None
-    ):
-        self._advertisement = advertisement_
+    def __init__(self, id, name, chanel, cost, created_at, product_id, adv_=None):
+        self._adv = adv_
         self._id = id
         self.name = name
         self.chanel = chanel
@@ -12,11 +10,11 @@ class Adv:
 
     @property
     def id(self):
-        return self._id or self._advertisement.id
+        return self._id or self._adv.id
 
     @property
     def created_at(self):
-        return self._created_at or self._advertisement.created_at
+        return self._created_at or self._adv.created_at
 
     def dict(self):
         return {
