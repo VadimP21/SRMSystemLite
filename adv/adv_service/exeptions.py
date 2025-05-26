@@ -1,0 +1,2 @@
+class AdvNotFind(Exception):
+    pass
