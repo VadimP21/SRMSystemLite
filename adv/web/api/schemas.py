@@ -2,6 +2,9 @@ from marshmallow import Schema, EXCLUDE, fields, validate
 
 
 class CreateAdvSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE
+
     name = fields.Str(required=True, validate=validate.Length(min=3, max=100))
     chanel = fields.Str(required=True, validate=validate.OneOf(["Google", "VK", "TG", "YouTube", "Yandex"]))
     cost = fields.Decimal(
