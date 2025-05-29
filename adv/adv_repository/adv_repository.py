@@ -1,4 +1,5 @@
-from typing import Dict, Any, List
+from datetime import datetime
+from typing import Dict, Any
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -28,20 +29,29 @@ class AdvRepository:
             return None
 
     def get_list(
-        self,
-        limit: int | None,
-        offset: int | None,
-        sort_field: str | None,
-        sort_order: str = "asc",
-        **filters,
+            self,
+            limit: int | None,
+            offset: int | None,
+            sort_field: str | None,
+            since: datetime | None,
+            sort_order: str = "asc",
+            **filters,
     ):
         try:
-            query = self.session.query(AdvModel).filter_by(**filters)
+            query = self.session.query(AdvModel)
+            if since is not None:
+                query = query.filter(AdvModel.created_at >= since)
+            if filters:
+                query = query.filter_by(**filters)
             if sort_field is not None:
-                if sort_field == "desc":
-                    query = query.order_by(getattr(AdvModel, sort_order).desc())
+                column = getattr(AdvModel, sort_field, None)
+                if column is not None:
+                    if sort_order.lower() == "desc":
+                        query = query.order_by(column.desc())
+                    else:
+                        query = query.order_by(column.asc())
                 else:
-                    query = query.order_by(getattr(AdvModel, sort_order))
+                    print(f"Warning: Sort field '{sort_field}' not found in AdvModel.")
             if limit is not None:
                 query = query.limit(limit)
             if offset is not None:
@@ -50,7 +60,7 @@ class AdvRepository:
             return [Adv(**adv.dict()) for adv in ads]
         except SQLAlchemyError as e:
             print(f"Error getting ads: {e}")
-            return None
+            return []
 
     def add(self, adv: Dict[str, Any]) -> Adv | None:
         try:
