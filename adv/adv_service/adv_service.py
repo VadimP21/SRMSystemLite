@@ -1,5 +1,5 @@
 from adv.adv_service.adv import Adv
-from adv.adv_service.exeptions import AdvNotFind
+from adv.adv_service.exeptions import AdvNotNotFoundError
 
 
 class AdvService:
@@ -13,18 +13,19 @@ class AdvService:
         adv = self.adv_repository.get(adv_id)
         if adv is not None:
             return adv
-        raise AdvNotFind(f"Advertisement with id {adv_id} is not found")
+        raise AdvNotNotFoundError(f"Advertisement with id {adv_id} is not found")
 
     def update_adv(self, adv_id, item):
+        print(adv_id, item)
         adv = self.adv_repository.get(adv_id)
         if adv is None:
-            raise AdvNotFind(f"Advertisement with id {adv_id} is not found")
+            raise AdvNotNotFoundError(f"Advertisement with id {adv_id} is not found")
         return self.adv_repository.update(adv_id, item)
 
     def delete_adv(self, adv_id):
         adv = self.adv_repository.get(adv_id)
         if adv is None:
-            raise AdvNotFind(f"Advertisement with id {adv_id} is not found")
+            raise AdvNotNotFoundError(f"Advertisement with id {adv_id} is not found")
         self.adv_repository.delete(adv_id)
 
     def list_ads(self, **filters):
@@ -32,11 +33,13 @@ class AdvService:
         offset = filters.pop("offset", None)
         sort_field = filters.pop("sort_field", None)
         sort_order = filters.pop("sort_order", None)
+        since = filters.pop("since", None)
 
         return self.adv_repository.get_list(
             limit=limit,
             offset=offset,
             sort_field=sort_field,
             sort_order=sort_order,
+            since=since,
             **filters,
         )
