@@ -42,6 +42,12 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/SortOrder'
+        - name: since
+          in: query
+          required: false
+          schema:
+            type: string
+            format: 'data-time'
       summary: Returns a list of advertisements
       operationId: getAds
       responses:
