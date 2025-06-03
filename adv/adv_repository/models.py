@@ -25,7 +25,7 @@ class AdvModel(Base):
     product_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
     def __repr__(self) -> str:
-        return f"Advertisement(id={self.id!r}, name={self.name!r}, cost={self.cost!r}, chanel={self.chanel!r})"
+        return f"Advertisement(id={self.id!r}, name={self.name!r}, cost={self.cost!r}, chanel={self.chanel!r}, created_at={self.created_at!r})"
 
     def dict(self):
         return {
@@ -33,7 +33,7 @@ class AdvModel(Base):
             "name": self.name,
             "cost": str(self.cost),
             "chanel": self.chanel,
-            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "created_at": self.created_at,
             "product_id": self.product_id,
         }
 

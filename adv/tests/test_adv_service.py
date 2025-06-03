@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from adv.adv_service.adv import Adv
 from adv.adv_service.adv_service import AdvService
-from adv.adv_service.exeptions import AdvNotFind
+from adv.adv_service.exeptions import AdvNotNotFoundError
 
 
 @pytest.fixture
@@ -88,11 +88,11 @@ def test_get_adv_returns_adv_if_found(adv_service, mock_adv_repository, adv_get)
 
 def test_get_adv_raises_advnotfind_if_not_found(adv_service, mock_adv_repository):
     """
-    Тестирует, что get_adv выбрасывает AdvNotFind, если объявление не найдено.
+    Тестирует, что get_adv выбрасывает AdvNotNotFoundError, если объявление не найдено.
     """
     mock_adv_repository.get.return_value = None
 
-    with pytest.raises(AdvNotFind) as e:
+    with pytest.raises(AdvNotNotFoundError) as e:
         adv_service.get_adv(999)
 
     mock_adv_repository.get.assert_called_once_with(999)
@@ -120,11 +120,11 @@ def test_update_adv_raises_advnotfind_if_not_found(
     adv_service, mock_adv_repository, adv_update
 ):
     """
-    Тестирует, что update_adv выбрасывает AdvNotFind, если объявление не найдено.
+    Тестирует, что update_adv выбрасывает AdvNotNotFoundError, если объявление не найдено.
     """
     mock_adv_repository.get.return_value = None
 
-    with pytest.raises(AdvNotFind) as e:
+    with pytest.raises(AdvNotNotFoundError) as e:
         adv_service.update_adv(999, adv_update)
 
     mock_adv_repository.get.assert_called_once_with(999)
@@ -146,11 +146,11 @@ def test_delete_adv_deletes_adv_if_found(adv_service, mock_adv_repository, adv_g
 
 def test_delete_adv_raises_advnotfind_if_not_found(adv_service, mock_adv_repository):
     """
-    Тестирует, что delete_adv выбрасывает AdvNotFind, если объявление не найдено.
+    Тестирует, что delete_adv выбрасывает AdvNotNotFoundError, если объявление не найдено.
     """
     mock_adv_repository.get.return_value = None
 
-    with pytest.raises(AdvNotFind) as e:
+    with pytest.raises(AdvNotNotFoundError) as e:
         adv_service.delete_adv(999)
 
     mock_adv_repository.get.assert_called_once_with(999)
@@ -183,6 +183,7 @@ def test_list_ads_calls_repository_with_correct_filters_and_returns_list(
         sort_field="name",
         sort_order="asc",
         chanel="TG",
+        since=datetime(2022, 1, 1),
         cost_gt=50,
     )
     mock_adv_repository.get_list.assert_called_once_with(
@@ -191,6 +192,7 @@ def test_list_ads_calls_repository_with_correct_filters_and_returns_list(
         sort_field="name",
         sort_order="asc",
         chanel="TG",
+        since=datetime(2022, 1, 1),
         cost_gt=50,
     )
     assert len(result) == 2
@@ -200,7 +202,7 @@ def test_list_ads_calls_repository_with_correct_filters_and_returns_list(
     mock_adv_repository.get_list.return_value = [adv_get]
     result = adv_service.list_ads(limit=5)
     mock_adv_repository.get_list.assert_called_once_with(
-        limit=5, offset=None, sort_field=None, sort_order=None
+        limit=5, offset=None, sort_field=None, sort_order=None, since=None
     )
     assert len(result) == 1
     assert result[0] == adv_get

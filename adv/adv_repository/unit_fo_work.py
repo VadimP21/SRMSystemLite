@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from adv.settings.bd_settings import adv_db_settings
+from adv.web.config import BaseConfig
 
 
 class UnitOfWork:
     def __init__(self):
         self.session_maker = sessionmaker(
-            bind=create_engine(adv_db_settings.DATABASE_URL)
+            bind=create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI)
         )
 
     def __enter__(self):

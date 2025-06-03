@@ -1,2 +1,2 @@
-class AdvNotFind(Exception):
+class AdvNotNotFoundError(Exception):
     pass

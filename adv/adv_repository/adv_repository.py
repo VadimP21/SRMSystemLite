@@ -29,13 +29,13 @@ class AdvRepository:
             return None
 
     def get_list(
-            self,
-            limit: int | None,
-            offset: int | None,
-            sort_field: str | None,
-            since: datetime | None,
-            sort_order: str = "asc",
-            **filters,
+        self,
+        limit: int | None,
+        offset: int | None,
+        sort_field: str | None,
+        since: datetime | None,
+        sort_order: str = "asc",
+        **filters,
     ):
         try:
             query = self.session.query(AdvModel)

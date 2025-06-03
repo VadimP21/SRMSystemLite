@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 
-from product.web.api.api import get_product, update_product
 from product.web.main import app
 
 test_client = TestClient(app=app)

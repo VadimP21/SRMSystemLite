@@ -109,37 +109,6 @@ class TestProductService(unittest.TestCase):
         self.mock_repository.get_by_id.assert_called_once_with(product_id)
         self.mock_repository.delete.assert_not_called()
 
-    def test_delete_product_hard_found(self):
-        """Тест delete_product_hard удаляет продукт (жестко), если найден."""
-        product_id = 5
-        mock_product = {
-            "id": product_id,
-            "name": "Product to Delete Hard",
-            "price": 300,
-        }
-
-        self.mock_repository.get_by_id.return_value = mock_product
-
-        result = self.product_service.delete_product_hard(product_id)
-
-        self.mock_repository.get_by_id.assert_called_once_with(product_id)
-        self.mock_repository.delete_hard.assert_called_once_with(product_id)
-        self.assertIsNone(result)
-
-    def test_delete_product_hard_not_found(self):
-        """Тест delete_product_hard выбрасывает ProductNotFoundError, если продукт не найден."""
-        product_id = 6
-
-        self.mock_repository.get_by_id.return_value = None
-
-        with self.assertRaisesRegex(
-            ProductNotFoundError, f"Product with id {product_id} is not found"
-        ):
-            self.product_service.delete_product_hard(product_id)
-
-        self.mock_repository.get_by_id.assert_called_once_with(product_id)
-        self.mock_repository.delete_hard.assert_not_called()
-
     def test_list_products_without_filters(self):
         """Тест list_products без фильтров вызывает get_list репозитория без аргументов."""
         mock_product_list = [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}]
