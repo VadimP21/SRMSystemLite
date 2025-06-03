@@ -51,10 +51,16 @@ class ProductRepository:
         try:
             query = self.session.query(ProductModel).filter_by(**filters)
             if sort_field is not None:
-                if sort_order == "desc":
-                    query = query.order_by(getattr(ProductModel, sort_field).desc())
+                column = getattr(ProductModel, sort_field, None)
+                if column is not None:
+                    if sort_order.lower() == "desc":
+                        query = query.order_by(column.desc())
+                    else:
+                        query = query.order_by(column.asc())
                 else:
-                    query = query.order_by(getattr(ProductModel, sort_field))
+                    print(
+                        f"Warning: Sort field '{sort_field}' not found in ProductModel."
+                    )
             if limit is not None:
                 query = query.limit(limit)
             if offset > 0:
@@ -64,7 +70,7 @@ class ProductRepository:
             return [Product(**product.dict()) for product in products]
         except SQLAlchemyError as e:
             print(f"Error getting products: {e}")
-            return None
+            return []
 
     def add(self, product: Dict[str, Any]) -> Product | None:
         try:
