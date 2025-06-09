@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask
 from flask_smorest import Api
+from sqlalchemy import create_engine
 
 from adv.web.api.api import blueprint
 from adv.web.config import config_by_name
@@ -18,7 +19,6 @@ def create_app(config_name=None):
 
     app = Flask(__name__, instance_relative_config=True)
     load_dotenv()
-
     app.config.from_object(config_by_name[config_name])
 
     try:
@@ -27,6 +27,12 @@ def create_app(config_name=None):
         pass
     except Exception as e:
         app.logger.warning(f"Ошибка загрузки конфигурации из instance/: {e}")
+
+    engine = create_engine(
+        app.config["SQLALCHEMY_DATABASE_URL"],
+    )
+
+    app.db_engine = engine
 
     adv_api = Api(app)
 
