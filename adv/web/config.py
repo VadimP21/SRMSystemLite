@@ -20,7 +20,7 @@ class BaseConfig:
     OPENAPI_SWAGGER_UI_PATH = "/docs/adv"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///crm.db")
+    SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///crm.db")
 
     SQLALCHEMY_POOL_SIZE = int(os.environ.get("SQLALCHEMY_POOL_SIZE", 5))
     SQLALCHEMY_MAX_OVERFLOW = int(os.environ.get("SQLALCHEMY_MAX_OVERFLOW", 10))
@@ -30,12 +30,12 @@ class BaseConfig:
 
 class ProductionConfig(BaseConfig):
     SECRET_KEY = os.environ.get("SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL", "sqlite:///crm.db")
+    SQLALCHEMY_DATABASE_URL = os.environ.get("DEV_DATABASE_URL", "sqlite:///crm.db")
     SQLALCHEMY_ECHO = True
     SECRET_KEY = "super_secret_dev_key"
 
@@ -44,7 +44,9 @@ class TestingConfig(BaseConfig):
     """Конфигурация для тестирования."""
 
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_DATABASE_URL = os.environ.get(
+        "TEST_DATABASE_URL", "sqlite:///crm_test.db"
+    )
     SQLALCHEMY_ECHO = False
     SECRET_KEY = "test_secret_key"
 

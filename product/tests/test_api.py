@@ -11,17 +11,17 @@ updated_payload = {"name": "updated_product_name", "price": 150.50}
 bad_payload = {"name": 1, "price": "price"}
 
 
-def test_create_order_success():
+def test_create_product_success():
     response = test_client.post("/products", json=good_payload)
     assert response.status_code == 201
 
 
-def test_create_order_fails():
+def test_create_product_fails():
     response = test_client.post("/products", json=bad_payload)
     assert response.status_code == 422
 
 
-def test_get_order_success():
+def test_get_product_success():
     post_response = test_client.post("/products", json=good_payload)
     assert post_response.status_code == 201
 

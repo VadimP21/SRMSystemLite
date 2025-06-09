@@ -16,7 +16,6 @@ class AdvService:
         raise AdvNotNotFoundError(f"Advertisement with id {adv_id} is not found")
 
     def update_adv(self, adv_id, item):
-        print(adv_id, item)
         adv = self.adv_repository.get(adv_id)
         if adv is None:
             raise AdvNotNotFoundError(f"Advertisement with id {adv_id} is not found")

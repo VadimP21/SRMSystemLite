@@ -58,7 +58,7 @@ class Adv(MethodView):
     @blueprint.arguments(CreateAdvSchema)
     @blueprint.response(status_code=200, schema=GetAdvSchema)
     @blueprint.alt_response(status_code=404, schema=ErrorSchema)
-    def put(self, adv_id, payload):
+    def put(self, payload, adv_id):
         try:
             with UnitOfWork() as unit_of_work:
                 repo = AdvRepository(unit_of_work.session)
@@ -68,7 +68,7 @@ class Adv(MethodView):
             return result.dict()
 
         except AdvNotNotFoundError:
-            abort(404, message=f"Advertisement with ID='{adv_id}' not found")
+            abort(404, description=f"Advertisement with ID='{adv_id}' not found")
 
     @blueprint.response(status_code=204)
     @blueprint.alt_response(status_code=404, schema=ErrorSchema)
@@ -82,4 +82,4 @@ class Adv(MethodView):
             return
 
         except AdvNotNotFoundError:
-            abort(404, message=f"Advertisement with ID='{adv_id}' not found")
+            abort(404, description=f"Advertisement with ID='{adv_id}' not found")
