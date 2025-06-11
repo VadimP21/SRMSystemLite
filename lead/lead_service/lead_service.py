@@ -20,18 +20,17 @@ class LeadService:
             raise LeadNotNotFoundError(f"Lead with id {lead_id} is not found")
         return self.lead_repository.update(lead_id, item)
 
-    def archive_lead(self, lead_id):
+    def delete_lead(self, lead_id):
         lead = self.lead_repository.get(lead_id)
         if lead is None:
             raise LeadNotNotFoundError(f"Lead with id {lead_id} is not found")
-        self.lead_repository.archive(lead_id)
+        self.lead_repository.delete(lead_id)
 
     def list_leads(self, **filters):
         limit = filters.pop("limit")
         offset = filters.pop("offset", None)
         sort_field = filters.pop("sort_field", None)
         sort_order = filters.pop("sort_order", None)
-
         return self.lead_repository.get_list(
             limit=limit,
             offset=offset,
@@ -39,3 +38,10 @@ class LeadService:
             sort_order=sort_order,
             **filters,
         )
+
+    def archive_lead(self, lead_id):
+        lead = self.lead_repository.get(lead_id)
+        if lead is None:
+            raise LeadNotNotFoundError(f"Lead with id {lead_id} is not found")
+        return self.lead_repository.update(lead_id, is_archived=True)
+
