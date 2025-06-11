@@ -1,5 +1,16 @@
 class Lead:
-    def __init__(self, id, name, first_name, phone, email, adv_id, is_active, is_archived, lead_=None):
+    def __init__(
+        self,
+        id,
+        name,
+        first_name,
+        phone,
+        email,
+        adv_id,
+        is_active,
+        is_archived,
+        lead_=None,
+    ):
         self._lead = lead_
         self._id = id
         self.name = name
