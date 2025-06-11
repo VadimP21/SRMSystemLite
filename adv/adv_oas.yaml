@@ -88,7 +88,7 @@ paths:
               parameters:
                 product_name: '$response.body#/id'
               description: >
-                The `name` value returned in the response can be used as
+                The `id` value returned in the response can be used as
                 the `adv_id` parameter in `PUT /adv/{adv_id}
             DeleteAdv:
               operationId: deleteAdv
@@ -214,7 +214,7 @@ components:
           format: decimal
           minimum: 1
           maximum: 100000000
-        id:
+        product_id:
           type: integer
           format: int32
           maximum: 1000000
