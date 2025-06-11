@@ -1,0 +1,239 @@
+openapi: 3.0.0
+info:
+  title: Lead API
+  summary: API that allows you to manage leads for CRM
+  version: 1.0.0
+
+servers:
+  - url: https://localhost:8000
+    description: local development server
+  - url: https://crm.worksystem.com
+    description: main production server
+  - url: https://crm.worksystem-staging.com
+    description: staging server for testing purposes only
+
+paths:
+  /leads:
+    get:
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 10
+            maximum: 50
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 0
+            maximum: 50
+        - name: sort_field
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortField'
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SortOrder'
+      summary: Returns a list of leads
+      operationId: getLeads
+      responses:
+        '200':
+          description: A JSON array of ads
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    post:
+      summary: Create a lead
+      operationId: CreateLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLeadSchema'
+      responses:
+        '201':
+          description: A JSON representation of the created lead
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLeadSchema'
+          links:
+            GetLead:
+              operationId: getLead
+              parameters:
+                product_name: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `lead_id` parameter in `GET /lead/{lead_id}`
+            UpdateLead:
+              operationId: updateLead
+              parameters:
+                product_name: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `lead_id` parameter in `PUT /lead/{lead_id}
+            DeleteLead:
+              operationId: deleteLead
+              parameters:
+                product_id: '$response.body#/id'
+              description: >
+                The `id` value returned in the response can be used as
+                the `lead_id` parameter in `DELETE /lead/{lead_id}
+        '400':
+          description: Bad Request - Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /lead/{lead_id}:
+    parameters:
+      - in: path
+        name: lead_id
+        required: true
+        schema:
+          type: integer
+          format: int32
+          maximum: 1000000
+          minimum: 1
+    get:
+      summary: Returns the details of a specific lead
+      operationId: getLead
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLeadSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    put:
+      summary: Replaces an existing lead
+      operationId: updateLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLeadSchema'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLeadSchema'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      summary: Deletes an existing lead
+      operationId: deleteLead
+      responses:
+        '204':
+          description: The resource was deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnprocessableEntity:
+      description: The payload contains invalid values.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          oneOf:
+            - type: string
+            - type: array
+    SortField:
+      type: string
+      enum:
+        - name
+        - first_name
+        - is_active
+    SortOrder:
+      type: string
+      enum:
+        - asc
+        - desc
+    CreateLeadSchema:
+      type: object
+      required:
+        - name
+        - first_name
+        - phone
+        - email
+        - adv_id
+      properties:
+        name:
+          type: string
+          minLength: 1
+        first_name:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          description: "Телефонный номер, например, +79XXXXXXXXX или 89XXXXXXXXX"
+          pattern: '^\+?\d{10,15}$'
+        email:
+          type: string
+          description: "Адрес электронной почты"
+          maxLength: 255
+        adv_id:
+          type: integer
+          format: int32
+          maximum: 1000000
+    GetLeadSchema:
+      allOf:
+        - $ref: '#/components/schemas/CreateAdvSchema'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              maximum: 1000000
+            is_active:
+              type: boolean
+            is_archived:
+              type: boolean
+    LeadResponse:
+      type: object
+      description: Response containing a list of leads
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetLeadSchema'
