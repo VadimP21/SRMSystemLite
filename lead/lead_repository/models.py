@@ -37,5 +37,3 @@ class LeadModel(Base):
             "is_active": self.is_active,
             "is_archived": self.is_archived,
         }
-
-

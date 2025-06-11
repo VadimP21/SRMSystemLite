@@ -2,7 +2,7 @@ from fastapi import Query, HTTPException
 from starlette import status
 
 from product.product_repository.product_repository import ProductRepository
-from product.product_repository.unit_fo_work import UnitOfWork
+from product.product_repository.unit_of_work import UnitOfWork
 from product.product_service.exeptions import ProductNotFoundError
 from product.product_service.product_service import ProductService
 from product.web.main import app

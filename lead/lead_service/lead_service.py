@@ -44,4 +44,3 @@ class LeadService:
         if lead is None:
             raise LeadNotNotFoundError(f"Lead with id {lead_id} is not found")
         return self.lead_repository.update(lead_id, is_archived=True)
-
