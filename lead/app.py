@@ -1,6 +1,7 @@
 """
 Файл подключения
 """
+
 import logging
 
 import tornado
@@ -16,9 +17,13 @@ if __name__ == "__main__":
     try:
         app = app()
         app.listen(8000)
-        logging.info("Server started on port 8000") #Добавьте логирование
+        logging.info("Server started on port 8000")  # Добавьте логирование
         tornado.ioloop.IOLoop.current().start()
     except OSError as e:
-        logging.error(f"Failed to start server: {e}") # Обработка ошибки, например, занятый порт
+        logging.error(
+            f"Failed to start server: {e}"
+        )  # Обработка ошибки, например, занятый порт
     except Exception as e:
-        logging.exception(f"An unexpected error occurred: {e}") #Логирование других исключений
+        logging.exception(
+            f"An unexpected error occurred: {e}"
+        )  # Логирование других исключений

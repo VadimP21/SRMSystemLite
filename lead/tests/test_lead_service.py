@@ -45,7 +45,7 @@ def lead_post():
         email="exmp_new_lead_22@mail.com",
         adv_id="1",
         is_active=None,
-        is_archived=None
+        is_archived=None,
     )
 
 
@@ -65,7 +65,7 @@ def lead_update():
 
 
 def test_place_lead__adds_item_to_repository_and_returns_it(
-        lead_service, mock_lead_repository, lead_post
+    lead_service, mock_lead_repository, lead_post
 ):
     """
     Тестирует, что place_lead корректно вызывает метод add репозитория
@@ -81,8 +81,8 @@ def test_place_lead__adds_item_to_repository_and_returns_it(
 
 def test_get_lead_returns_lead_id_found(lead_service, mock_lead_repository, lead_get):
     """
-      Тестирует, что get_lead возвращает объявление, если оно найдено.
-      """
+    Тестирует, что get_lead возвращает объявление, если оно найдено.
+    """
     mock_lead_repository.get.return_value = lead_get
 
     found_lead = lead_service.get_lead(1)
@@ -102,13 +102,14 @@ def test_get_lead_raises_lead_not_find_if_not_found(lead_service, mock_lead_repo
     mock_lead_repository.get.assert_called_once_with(999)
     assert "Lead with id 999 is not found" in str(e.value)
 
+
 def test_update_lead_updates_lead_if_found_and_returns_updated(
-        lead_service, mock_lead_repository,lead_get, lead_update
+    lead_service, mock_lead_repository, lead_get, lead_update
 ):
     """
-        Тестирует, что update_lead корректно обновляет объявление, если оно найдено,
-        и возвращает обновленный объект.
-        """
+    Тестирует, что update_lead корректно обновляет объявление, если оно найдено,
+    и возвращает обновленный объект.
+    """
     mock_lead_repository.get.return_value = lead_get
     mock_lead_repository.update.return_value = lead_update
 
@@ -135,7 +136,9 @@ def test_update_lead_raises_lead_not_find_if_not_found(
     assert "Lead with id 999 is not found" in str(e.value)
 
 
-def test_delete_lead_deletes_lead_if_found(lead_service, mock_lead_repository, lead_get):
+def test_delete_lead_deletes_lead_if_found(
+    lead_service, mock_lead_repository, lead_get
+):
     """
     Тестирует, что delete_lead корректно удаляет лида, если оно найдено.
     """
@@ -147,7 +150,9 @@ def test_delete_lead_deletes_lead_if_found(lead_service, mock_lead_repository, l
     mock_lead_repository.delete.assert_called_once_with(1)
 
 
-def test_delete_lead_raises_lead_not_find_if_not_found(lead_service, mock_lead_repository):
+def test_delete_lead_raises_lead_not_find_if_not_found(
+    lead_service, mock_lead_repository
+):
     """
     Тестирует, что delete_lead выбрасывает LeadNotNotFoundError, если лид не найден.
     """
@@ -179,7 +184,7 @@ def test_list_ads_calls_repository_with_correct_filters_and_returns_list(
             adv_id="1",
             is_active=False,
             is_archived=True,
-        )
+        ),
     ]
 
     result = lead_service.list_leads(

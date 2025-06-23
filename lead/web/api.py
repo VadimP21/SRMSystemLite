@@ -56,8 +56,6 @@ class Lead(RequestHandler):
             self.set_status(e.code)
             self.write({"error": e.message})
 
-
-
     def get(self, lead_id=None):
         try:
             with UnitOfWork() as unit_of_work:
@@ -67,7 +65,6 @@ class Lead(RequestHandler):
             self.write(result.dict())
         except LeadNotNotFoundError:
             raise HTTPError(404, reason="Lead not found")
-
 
     def put(self, lead_id=None):
         try:
@@ -88,7 +85,7 @@ class Lead(RequestHandler):
         except LeadNotNotFoundError:
             raise HTTPError(404, reason="Lead not found")
 
-    def delete(self,lead_id=None):
+    def delete(self, lead_id=None):
         try:
             with UnitOfWork() as unit_of_work:
                 repo = LeadRepository(unit_of_work.session)
