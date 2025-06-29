@@ -5,10 +5,8 @@ from adv.web.config import BaseConfig
 
 
 class UnitOfWork:
-    def __init__(self):
-        self.session_maker = sessionmaker(
-            bind=create_engine(BaseConfig.SQLALCHEMY_DATABASE_URI)
-        )
+    def __init__(self, engine=BaseConfig.SQLALCHEMY_DATABASE_URI):
+        self.session_maker = sessionmaker(bind=create_engine(engine))
 
     def __enter__(self):
         self.session = self.session_maker()
