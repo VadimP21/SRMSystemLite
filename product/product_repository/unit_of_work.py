@@ -5,8 +5,8 @@ from product.settings.bd_settings import settings
 
 
 class UnitOfWork:
-    def __init__(self):
-        self.session_maker = sessionmaker(bind=create_engine(settings.DATABASE_URL))
+    def __init__(self, engine=settings.DATABASE_URL):
+        self.session_maker = sessionmaker(bind=create_engine(engine))
 
     def __enter__(self):
         self.session = self.session_maker()
