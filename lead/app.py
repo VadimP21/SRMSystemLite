@@ -6,6 +6,7 @@ import logging
 
 import tornado
 
+from lead.lead_settings.app_settings import Settings
 from lead.web.routers import routers
 
 
@@ -16,14 +17,10 @@ def app():
 if __name__ == "__main__":
     try:
         app = app()
-        app.listen(8000)
-        logging.info("Server started on port 8000")  # Добавьте логирование
+        app.listen(Settings.port)
+        logging.info("Server started on port 8000")
         tornado.ioloop.IOLoop.current().start()
     except OSError as e:
-        logging.error(
-            f"Failed to start server: {e}"
-        )  # Обработка ошибки, например, занятый порт
+        logging.error(f"Failed to start server: {e}")
     except Exception as e:
-        logging.exception(
-            f"An unexpected error occurred: {e}"
-        )  # Логирование других исключений
+        logging.exception(f"An unexpected error occurred: {e}")
